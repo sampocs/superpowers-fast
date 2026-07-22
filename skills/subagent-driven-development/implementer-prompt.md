@@ -41,6 +41,14 @@ Subagent (general-purpose):
 
     Work from: [directory]
 
+    ## Worktree isolation (wave dispatches)
+
+    When this dispatch is part of an implement wave, the controller supplies a
+    dedicated worktree path and branch. Work EXCLUSIVELY in that worktree — never
+    touch the main checkout or any sibling task's worktree. All commits go on your
+    task branch. If the worktree is missing or on the wrong branch, STOP and
+    report BLOCKED rather than working in the main tree.
+
     **While you work:** If you encounter something unexpected or unclear, **ask questions**.
     It's always OK to pause and clarify. Don't guess or make assumptions.
 

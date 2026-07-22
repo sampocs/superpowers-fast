@@ -48,8 +48,8 @@ digraph when_to_use {
 digraph process {
     rankdir=TB;
 
-    subgraph cluster_per_task {
-        label="Per Task";
+    subgraph cluster_foundation {
+        label="Foundation phase (serial, main tree)";
         "Dispatch implementer subagent (./implementer-prompt.md)" [shape=box];
         "Implementer subagent asks questions?" [shape=diamond];
         "Answer questions, provide context" [shape=box];
@@ -60,8 +60,21 @@ digraph process {
         "Mark task complete in todo list and progress ledger" [shape=box];
     }
 
+    subgraph cluster_waves {
+        label="Wave-eligible tasks (after ## Parallel-safe tasks)";
+        "Dispatch ALL wave implementers in one message, one worktree each" [shape=box];
+        "Wait for all wave implementers to report" [shape=box];
+        "Implement wave fully returned?" [shape=diamond];
+        "Dispatch ALL pending task reviewers in one message" [shape=box];
+        "Any task VERDICT: needs-fixes?" [shape=diamond];
+        "Dispatch ALL fix subagents in one message (reviewer's fix brief, verbatim)" [shape=box];
+        "Dispatch all re-reviews in one message" [shape=box];
+    }
+
     "Read plan, note context and global constraints, create todos" [shape=box];
-    "More tasks remain?" [shape=diamond];
+    "More foundation tasks remain?" [shape=diamond];
+    "Wave-eligible tasks in plan?" [shape=diamond];
+    "Merge each task branch serially, remove worktree, run full gate" [shape=box];
     "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)" [shape=box];
     "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
@@ -75,12 +88,69 @@ digraph process {
     "Task reviewer reports spec ✅ and quality approved?" -> "Dispatch fix subagent for Critical/Important findings" [label="no"];
     "Dispatch fix subagent for Critical/Important findings" -> "Write diff file, dispatch task reviewer subagent (./task-reviewer-prompt.md)" [label="re-review"];
     "Task reviewer reports spec ✅ and quality approved?" -> "Mark task complete in todo list and progress ledger" [label="yes"];
-    "Mark task complete in todo list and progress ledger" -> "More tasks remain?";
-    "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
-    "More tasks remain?" -> "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)" [label="no"];
+    "Mark task complete in todo list and progress ledger" -> "More foundation tasks remain?";
+    "More foundation tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
+    "More foundation tasks remain?" -> "Wave-eligible tasks in plan?" [label="no"];
+    "Wave-eligible tasks in plan?" -> "Dispatch ALL wave implementers in one message, one worktree each" [label="yes"];
+    "Wave-eligible tasks in plan?" -> "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)" [label="no - degenerate case, classic loop only"];
+    "Dispatch ALL wave implementers in one message, one worktree each" -> "Wait for all wave implementers to report";
+    "Wait for all wave implementers to report" -> "Implement wave fully returned?";
+    "Implement wave fully returned?" -> "Wait for all wave implementers to report" [label="no - keep waiting"];
+    "Implement wave fully returned?" -> "Dispatch ALL pending task reviewers in one message" [label="yes"];
+    "Dispatch ALL pending task reviewers in one message" -> "Any task VERDICT: needs-fixes?";
+    "Any task VERDICT: needs-fixes?" -> "Dispatch ALL fix subagents in one message (reviewer's fix brief, verbatim)" [label="yes"];
+    "Dispatch ALL fix subagents in one message (reviewer's fix brief, verbatim)" -> "Dispatch all re-reviews in one message";
+    "Dispatch all re-reviews in one message" -> "Any task VERDICT: needs-fixes?" [label="re-review"];
+    "Any task VERDICT: needs-fixes?" -> "Merge each task branch serially, remove worktree, run full gate" [label="no - all approved"];
+    "Merge each task branch serially, remove worktree, run full gate" -> "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)";
     "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)" -> "Use superpowers:finishing-a-development-branch";
 }
 ```
+
+## Execution Model: Foundation, then Waves
+
+Plans written with the writing-plans skill mark a `## Parallel-safe tasks`
+boundary. Everything before it is **foundation**; everything after it is
+**wave-eligible**.
+
+**Foundation phase (serial — unchanged from classic flow):** execute each
+foundation task with the per-task loop: dispatch implementer → task review →
+fix → re-review until approved. Foundation tasks run in the main working tree.
+
+**Implement wave:** dispatch ALL wave-eligible implementers concurrently in a
+single message. Each implementer gets its own isolated git worktree (created
+per superpowers:using-git-worktrees) branched from the last foundation commit,
+and its dispatch names that worktree path as its exclusive workspace. Worktree
+isolation is what makes parallel implementers safe — never dispatch parallel
+implementers into a shared checkout.
+
+**Review wave:** as each implementer reports DONE, generate that task's review
+package in its worktree (scripts/review-package BASE HEAD there). When the
+implement wave has fully returned, dispatch ALL pending task reviewers in ONE
+message — reviewers are read-only, so N reviewers across N worktrees cannot
+conflict. Never dispatch reviewers one at a time while other tasks await review.
+
+**Fix wave:** collect verdicts. For every task whose reviewer returned
+`VERDICT: needs-fixes`, dispatch ALL fix subagents in one message — each in its
+task's worktree, each carrying its reviewer's fix brief verbatim (see the
+task-reviewer template: the reviewer authors the fix dispatch, the controller
+routes it). Then dispatch all re-reviews in one message. Repeat until every
+task is approved.
+
+**Merge phase (serial — deliberately):** merge each task branch into the
+feature branch one at a time, resolving conflicts as they surface; remove each
+task worktree after its merge; run the project's full gate; then dispatch the
+final whole-branch review (most capable model) exactly as the classic flow.
+
+**Degenerate cases:** plans with no `## Parallel-safe tasks` section,
+single-task plans, and wave tasks whose `Depends on:` lines chain on each other
+all run the classic serial loop. When in doubt about a dependency, serialize
+that task into the foundation phase — correctness beats parallelism.
+
+**Ledger:** record wave events, not just task events: `Wave N dispatched
+(tasks 4,5,6)`, `Task 5: approved (wave N, commits a1b2c3..d4e5f6)`,
+`Wave N complete`. After compaction, the ledger plus `git branch --list`
+recovers which task branches exist and their review states.
 
 ## Pre-Flight Plan Review
 
@@ -370,7 +440,9 @@ Done!
 - Start implementation on main/master branch without explicit user consent
 - Skip task review, or accept a report missing either verdict (spec compliance AND task quality are both required)
 - Proceed with unfixed issues
-- Dispatch multiple implementation subagents in parallel (conflicts)
+- Dispatch parallel implementers WITHOUT worktree isolation (shared-tree writes conflict; isolation is the enabler, not optional)
+- Dispatch reviewers one at a time when multiple tasks await review (reviews are read-only — always batch the wave)
+- Author a fix dispatch yourself when the reviewer's fix brief exists — route the brief verbatim (plus worktree path); controller-authored fix prompts are the top source of orchestration overhead
 - Make a subagent read the whole plan file (hand it its task brief —
   `scripts/task-brief` — instead)
 - Skip scene-setting context (subagent needs to understand where task fits)

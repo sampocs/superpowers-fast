@@ -42,6 +42,23 @@ deliverable needs them; split only where a reviewer could meaningfully
 reject one task while approving its neighbor. Each task ends with an
 independently testable deliverable.
 
+## Parallel-Safe Tasks
+
+Structure every multi-task plan for wave execution:
+
+- Order dependency-bearing work FIRST: shared types, schema/config, interfaces,
+  scaffolding — these are the foundation tasks, executed serially.
+- Mark the boundary with a `## Parallel-safe tasks` heading. Every task after
+  the heading must depend only on foundation tasks — never on another
+  parallel-safe task — and carries an explicit `Depends on: Tasks 1-N` line so
+  the split is auditable.
+- Actively maximize the parallel-safe set. Two tasks that merely touch the same
+  file are not automatically dependent — worktree merges handle textual
+  overlap; only semantic dependencies (one task consumes the other's interface)
+  force serialization.
+- A multi-task plan with NO parallel-safe section must say why (e.g. a strict
+  dependency chain). Silence is a plan defect, not a default.
+
 ## Bite-Sized Task Granularity
 
 **Each step is one action (2-5 minutes):**
@@ -91,6 +108,8 @@ include this section.]
 - Produces: [what later tasks rely on — exact function names, parameter
   and return types. A task's implementer sees only their own task; this
   block is how they learn the names and types neighboring tasks use.]
+- Depends on: [foundation Tasks this needs; omit for foundation tasks.
+  Parallel-safe tasks MUST list only foundation tasks, never each other.]
 
 - [ ] **Step 1: Write the failing test**
 

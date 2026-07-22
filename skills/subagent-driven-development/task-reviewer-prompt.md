@@ -163,6 +163,35 @@ Subagent (general-purpose):
     **Task quality:** [Approved | Needs fixes]
 
     **Reasoning:** [1-2 sentence technical assessment]
+
+    ## Required verdict block (machine-routed — do not omit)
+
+    End your report with exactly one of:
+
+        VERDICT: approved
+
+    or
+
+        VERDICT: needs-fixes
+
+    If needs-fixes, follow the verdict line with a fix brief the controller will
+    dispatch VERBATIM as the fix subagent's prompt. You are authoring the fix
+    dispatch — the controller only adds the worktree path and report path. Include,
+    in this order:
+
+        ## Fix brief (ready to dispatch)
+        You are fixing review findings for Task N (<component>) of <project>.
+        Findings (fix ALL):
+        1. (<severity>) <file>:<line> — <what is wrong, what correct looks like>
+        ...
+        Covering tests: run <exact command(s) for the tests covering these changes>
+        and confirm they pass. Do not run unrelated suites.
+        Append your fix report (what changed, commands run, output) to:
+        <report file path>
+        Return only: STATUS, commit hash, one-line test summary.
+
+    A fix brief that says "see my findings above" is a defect — the fix subagent
+    never sees your report body, only the brief.
 ```
 
 **Placeholders:**
@@ -182,7 +211,11 @@ Subagent (general-purpose):
   wrote; the package never enters the controller's context)
 
 **Reviewer returns:** Spec Compliance verdict (✅/❌/⚠️), Strengths, Issues
-(Critical/Important/Minor), Task quality verdict
+(Critical/Important/Minor), Task quality verdict, and the required
+`VERDICT: approved` / `VERDICT: needs-fixes` line — with a ready-to-dispatch
+fix brief attached when the verdict is needs-fixes.
 
 A fix dispatch can address spec gaps and quality findings together;
-re-review after fixes covers both verdicts.
+re-review after fixes covers both verdicts. The verdict line is what the
+controller routes on — during a review wave it dispatches fix subagents
+for every task whose verdict came back needs-fixes, in one message.
