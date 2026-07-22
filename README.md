@@ -1,3 +1,15 @@
+> [!NOTE]
+> **This is `superpowers-fast`** — [sampocs](https://github.com/sampocs)'s fork of
+> [obra/superpowers](https://github.com/obra/superpowers) that parallelizes the
+> subagent-driven-development workflow: implementers fan out into isolated git
+> worktrees, task reviewers and fix agents dispatch in waves instead of one at a
+> time, and reviewers return ready-to-dispatch fix briefs. Motivated by transcript
+> analysis showing review/fix serialization dominated pipeline wall-clock (median
+> review-wave overlap 1.12x). The plugin installs under the name `superpowers`
+> (drop-in replacement — uninstall the upstream plugin first). All fork changes
+> live in two commits on top of the upstream mirror for easy auditing and
+> upstream merges.
+
 # Superpowers
 
 Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.

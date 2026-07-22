@@ -1,15 +1,15 @@
 {
-  "name": "superpowers-dev",
-  "description": "Development marketplace for Superpowers core skills library",
+  "name": "superpowers-fast",
+  "description": "Marketplace for superpowers-fast, a parallelized fork of the Superpowers core skills library",
   "owner": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com"
+    "name": "Sam Pochyly",
+    "email": "sam@stridelabs.co"
   },
   "plugins": [
     {
       "name": "superpowers",
-      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
-      "version": "6.1.1",
+      "description": "Core skills library (superpowers-fast fork): TDD, debugging, collaboration patterns, with parallelized subagent-driven development",
+      "version": "6.1.1-fast.1",
       "source": "./",
       "author": {
         "name": "Jesse Vincent",
