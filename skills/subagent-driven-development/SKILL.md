@@ -117,12 +117,32 @@ boundary. Everything before it is **foundation**; everything after it is
 foundation task with the per-task loop: dispatch implementer → task review →
 fix → re-review until approved. Foundation tasks run in the main working tree.
 
-**Implement wave:** dispatch ALL wave-eligible implementers concurrently in a
-single message. Each implementer gets its own isolated git worktree (created
-per superpowers:using-git-worktrees) branched from the last foundation commit,
-and its dispatch names that worktree path as its exclusive workspace. Worktree
-isolation is what makes parallel implementers safe — never dispatch parallel
-implementers into a shared checkout.
+**Implement wave:** dispatch the ENTIRE wave-eligible set concurrently in a
+single message — every task after the `## Parallel-safe tasks` boundary goes in
+one wave, not a subset. A parallel-safe task depends only on foundation tasks
+(never on a sibling), so there is never a reason to hold one back or run it
+solo; if a task truly must follow another wave task, it was mis-classified and
+belongs in the foundation phase. Do not let a heavier task, or a hedged
+`Depends on:` line that name-drops a foundation task as "…merged, for
+end-to-end," peel a task out of the wave — batch the whole set.
+
+Before dispatching, create the worktrees as an explicit step you must
+complete and verify — not a principle to keep in mind:
+
+1. For EACH wave task, create one dedicated worktree branched from the last
+   foundation commit, per superpowers:using-git-worktrees. Give each a distinct
+   name (e.g. `<feature>-task<N>`), one per task.
+2. Confirm you now have N distinct worktree paths for N wave tasks before
+   dispatching anything. If two tasks would share a path, STOP and fix it.
+3. Each implementer's dispatch names its own worktree path as its exclusive
+   workspace.
+
+Never dispatch two wave implementers into the same worktree. The hazard is NOT
+file overlap — it is that two agents committing in one working tree race on the
+shared git index and HEAD: one can stage the other's half-written files, or
+their commits interleave and clobber each other. Disjoint files do not make a
+shared worktree safe; "their files don't overlap, so one tree is fine" is the
+exact rationalization that corrupts a wave. One worktree per task, always.
 
 **Review wave:** as each implementer reports DONE, generate that task's review
 package in its worktree (scripts/review-package BASE HEAD there). When the
@@ -440,7 +460,8 @@ Done!
 - Start implementation on main/master branch without explicit user consent
 - Skip task review, or accept a report missing either verdict (spec compliance AND task quality are both required)
 - Proceed with unfixed issues
-- Dispatch parallel implementers WITHOUT worktree isolation (shared-tree writes conflict; isolation is the enabler, not optional)
+- Share one worktree across two wave implementers (dispatch them together, yes — but into DIFFERENT worktrees; two agents in one tree race on the shared git index/HEAD regardless of which files they touch — disjoint files are NOT an exception; create one worktree per task and verify N paths for N tasks before dispatching)
+- Run one parallel-safe task solo or hold it back from the wave (the whole set after the boundary goes in one dispatch; a task that can't is mis-classified foundation, not a wave straggler)
 - Dispatch reviewers one at a time when multiple tasks await review (reviews are read-only — always batch the wave)
 - Author a fix dispatch yourself when the reviewer's fix brief exists — route the brief verbatim (plus worktree path); controller-authored fix prompts are the top source of orchestration overhead
 - Make a subagent read the whole plan file (hand it its task brief —
