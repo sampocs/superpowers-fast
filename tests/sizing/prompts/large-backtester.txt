@@ -1,0 +1,1 @@
+Add a backtesting engine so users can replay their strategies against historical market data and see the PnL they would have made.

@@ -1,0 +1,1 @@
+Our exchange webhook integration fails intermittently on timeouts. Add retry with exponential backoff to it.

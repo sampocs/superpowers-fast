@@ -1,0 +1,1 @@
+The Save button on the settings page sits 4px lower than the Cancel button next to it — web/settings.css gives .save-btn a stray margin-top: 4px. Line them up.

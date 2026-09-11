@@ -1,0 +1,1 @@
+Add an admin page that shows summary metrics: total users, daily active users, and signups per day for the last 30 days.

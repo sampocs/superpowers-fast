@@ -1,0 +1,1 @@
+Add an optional "nickname" text field to the existing profile edit form and save it with the rest of the profile.
