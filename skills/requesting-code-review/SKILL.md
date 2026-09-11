@@ -16,7 +16,8 @@ Dispatch a reviewer subagent with precisely crafted context — never your sessi
 
 1. Pick the range. Whole branch: `BASE=$(git merge-base origin/main HEAD)`. One task: the commit recorded before it started — never `HEAD~1`, which drops all but the last commit.
 2. Package the diff: `../subagent-driven-development/scripts/review-package $BASE HEAD` prints the file it wrote.
-3. Dispatch a `general-purpose` subagent with [code-reviewer.md](code-reviewer.md) — most capable tier for whole-branch reviews. Fill in:
+3. Dispatch a `general-purpose` subagent with [code-reviewer.md](code-reviewer.md). Fill in:
+   - `[MODEL]` — most capable tier for whole-branch reviews
    - `[DESCRIPTION]` — what was built
    - `[PLAN_OR_REQUIREMENTS]` — spec or plan path, or the requirements
    - `[BASE_SHA]`, `[HEAD_SHA]` — the range

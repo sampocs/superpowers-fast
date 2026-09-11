@@ -53,7 +53,7 @@ Give this to every implementer and fixer; apply it yourself in `quick-change`.
 3. Run any repo-specific post-PR steps (e.g. Definition of Done, external review).
 4. Remove worktrees in the background.
 
-No merge / keep / discard prompt.
+No merge / PR / keep / discard prompt.
 
 ## Worktrees
 

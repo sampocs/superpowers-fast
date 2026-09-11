@@ -21,11 +21,8 @@ Per `../using-superpowers-fast/references/build-loop.md`, on the feature branch.
 
 Record `BASE=$(git rev-parse HEAD)`, then dispatch one implementer per chunk with [implementer-prompt.md](implementer-prompt.md):
 
-| Chunks | Dispatch |
-|---|---|
-| One | One implementer on the feature branch. |
-| Independent (no `Depends on:` between them) | All in one message, each in its own worktree — created in one batch per Worktrees in build-loop.md. |
-| Dependent | In `Depends on:` order; each starts from the previous chunk's commit. |
+- **One chunk:** one implementer on the feature branch.
+- **Two or three chunks:** one worktree per chunk (Worktrees in build-loop.md). Dispatch every chunk whose `Depends on:` is satisfied in one message. When a chunk merges (step 4), dispatch the chunks waiting on it, branched from the updated feature branch.
 
 Model: standard tier by default; most capable for chunks needing design judgment or broad codebase understanding. Always set it explicitly.
 
@@ -38,7 +35,7 @@ Model: standard tier by default; most capable for chunks needing design judgment
 
 ## 4. Merge
 
-Merge chunk branches into the feature branch one at a time, resolving conflicts as they surface. Remove chunk worktrees in the background.
+As each chunk reports DONE, merge its branch into the feature branch — one at a time, resolving conflicts as they surface — and remove its worktree in the background. Continue until every chunk has merged.
 
 ## 5. The loop
 
