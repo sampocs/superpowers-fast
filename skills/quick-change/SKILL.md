@@ -30,7 +30,7 @@ Never skip the one-liner.
 
 ## 2. Pre-flight
 
-Per `../using-superpowers-fast/references/build-loop.md`. Follow the repo's or user's branching policy; never commit to `main` directly.
+Per `../using-superpowers-fast/references/build-loop.md` — including its branching rule.
 
 ## 3. Do
 
