@@ -45,15 +45,16 @@ for case in "${CASES[@]}"; do
   cp -R "$SCRIPT_DIR/fixture" "$case_dir/project"
   (
     cd "$case_dir/project"
-    timeout 300 claude -p "$(cat "$PROMPTS_DIR/$prompt_file")" \
+    # CM_SESSION_NAME makes the user-level claude-mux naming ritual skip itself
+    CM_SESSION_NAME=sizing-test timeout 300 claude -p "$(cat "$PROMPTS_DIR/$prompt_file")" \
       --plugin-dir "$PLUGIN_DIR" \
       --dangerously-skip-permissions \
       --max-turns "$MAX_TURNS" \
-      --output-format stream-json \
+      --output-format stream-json --verbose \
       >"$log" 2>&1 || true
   )
 
-  if grep -qE "Sizing as ${tier}\b" "$log"; then
+  if grep -qE "Sizing as (\*\*)?${tier}\b" "$log"; then
     echo "  [PASS] $prompt_file announced $tier"
   else
     echo "  [FAIL] $prompt_file did not announce $tier (log: $log)"
