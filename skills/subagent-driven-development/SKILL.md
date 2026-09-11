@@ -347,9 +347,9 @@ a ledger file, not only in todos.
 You: I'm using Subagent-Driven Development to execute this plan.
 
 [Read plan file once: docs/superpowers/plans/feature-plan.md]
-[Create todos for all tasks]
+[Create todos for all tasks; run the build loop's pre-flight]
 
-Task 1: Hook installation script
+Task 1: Hook installation script (Review: no)
 
 [Run task-brief for Task 1; dispatch implementer with brief + report paths + context]
 
@@ -357,51 +357,36 @@ Implementer: "Before I begin - should the hook be installed at user or system le
 
 You: "User level (~/.config/superpowers/hooks/)"
 
-Implementer: "Got it. Implementing now..."
-[Later] Implementer:
+Implementer:
   - Implemented install-hook command
-  - Added tests, 5/5 passing
+  - Added tests, 5/5 passing (targeted)
   - Self-review: Found I missed --force flag, added it
   - Committed
 
-[Run review-package, dispatch task reviewer with the printed path]
-Task reviewer: Spec ✅ - all requirements met, nothing extra.
-  Strengths: Good test coverage, clean. Issues: None. Task quality: Approved.
+[Untagged → mark Task 1 complete]
 
-[Mark Task 1 complete]
+Task 2: Recovery modes (Review: yes — state machine)
 
-Task 2: Recovery modes
+[Run task-brief for Task 2; dispatch implementer]
 
-[Run task-brief for Task 2; dispatch implementer with brief + report paths + context]
-
-Implementer: [No questions, proceeds]
-Implementer:
-  - Added verify/repair modes
-  - 8/8 tests passing
-  - Self-review: All good
-  - Committed
+Implementer: Added verify/repair modes; 8/8 targeted tests passing; committed
 
 [Run review-package, dispatch task reviewer with the printed path]
-Task reviewer: Spec ❌:
-  - Missing: Progress reporting (spec says "report every 100 items")
-  - Extra: Added --json flag (not requested)
-  Issues (Important): Magic number (100)
+Task reviewer: Spec ❌ — missing progress reporting ("every 100 items"); extra --json flag.
+  Minor: magic number (100).
+  VERDICT: needs-fixes — standard-tier brief (spec gaps), cheap-tier brief (magic number)
 
-[Dispatch fix subagent with all findings]
-Fixer: Removed --json flag, added progress reporting, extracted PROGRESS_INTERVAL constant
+[Dispatch the standard-tier fixer, then the cheap-tier fixer — briefs verbatim]
+Fixers: removed --json, added progress reporting; extracted PROGRESS_INTERVAL
 
-[Task reviewer reviews again]
-Task reviewer: Spec ✅. Task quality: Approved.
+[The fix touched logic → scoped re-review of the fix commits]
+Task reviewer: VERDICT: approved
 
 [Mark Task 2 complete]
 
 ...
 
-[After all tasks]
-[Dispatch final code-reviewer]
-Final reviewer: All requirements met, ready to merge
-
-Done!
+[After all tasks: full suite (merge gate) → final code reviewer → fixers if needed → Finish]
 ```
 
 ## Advantages
