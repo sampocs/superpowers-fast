@@ -39,7 +39,7 @@ Before building or changing anything, size the task, announce it in one line nam
 
 ## Models
 
-Skills name model tiers: cheap, standard, most capable. Map them with the user's instructions; with no mapping, use the session model for every tier. Always set a model explicitly when dispatching a subagent.
+Skills name model tiers: cheap, standard, most capable. The session model is the most capable tier. Map standard and cheap with the user's instructions (keyed by the session model's family); with no mapping, use the session model for every tier. Always set a model explicitly when dispatching a subagent.
 
 ## Red Flags
 
