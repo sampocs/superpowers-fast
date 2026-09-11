@@ -1,4 +1,18 @@
-# Superpowers Release Notes
+# superpowers-fast Release Notes
+
+## superpowers-fast v1.0.0 (2026-09-11)
+
+Forked from Superpowers v6.1.1 and restructured around task tiers.
+
+- **Tiers.** The bootstrap sizes every task — Simple, Medium, Large — announces it, and routes: `quick-change` (new, replaces sp-lite), `brainstorming` → `lean-build` (new), or `brainstorming` → `writing-plans` → `subagent-driven-development`.
+- **One build loop** for all tiers (`references/build-loop.md`): pre-flight, targeted tests while building, the full suite before review, a scoped re-review of fixes that touched logic, a two-round fix cap, and a right-first-time checklist for implementers.
+- **Large trims.** Per-task review only on tasks tagged `Review: yes`; Minor findings go to a cheap-tier fixer; implementers skip the full suite; no execution-choice prompt.
+- **Concision pass** on `brainstorming`, `systematic-debugging`, `verification-before-completion`, and the bootstrap.
+- **Cut:** `executing-plans`, `dispatching-parallel-agents`, `using-git-worktrees`, `finishing-a-development-branch`; Pi, Kimi, Gemini, and Antigravity support; Codex portal packaging.
+- **Renamed** to `superpowers-fast` (namespace `superpowers-fast:*`). Paths written into your repos keep `docs/superpowers/` and `.superpowers/`.
+- **Measurement:** `scripts/session-analysis/` reports speed and bugs that got through, per tier.
+
+# Superpowers Release Notes (upstream history)
 
 ## v6.1.1 (2026-07-02)
 
