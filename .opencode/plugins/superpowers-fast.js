@@ -63,8 +63,8 @@ export const SuperpowersPlugin = async ({ client, directory }) => {
     // Return cached result on subsequent calls
     if (_bootstrapCache !== undefined) return _bootstrapCache;
 
-    // Try to load using-superpowers skill
-    const skillPath = path.join(superpowersSkillsDir, 'using-superpowers', 'SKILL.md');
+    // Try to load using-superpowers-fast skill
+    const skillPath = path.join(superpowersSkillsDir, 'using-superpowers-fast', 'SKILL.md');
     if (!fs.existsSync(skillPath)) {
       _bootstrapCache = null;
       return null;
@@ -87,9 +87,9 @@ When skills request actions, substitute OpenCode equivalents:
 Use OpenCode's native \`skill\` tool to list and load skills.`;
 
     _bootstrapCache = `<EXTREMELY_IMPORTANT>
-You have superpowers.
+You have superpowers-fast.
 
-**IMPORTANT: The using-superpowers skill content is included below. It is ALREADY LOADED - you are currently following it. Do NOT use the skill tool to load "using-superpowers" again - that would be redundant.**
+**IMPORTANT: The using-superpowers-fast skill content is included below. It is ALREADY LOADED - you are currently following it. Do NOT use the skill tool to load "using-superpowers-fast" again - that would be redundant.**
 
 ${content}
 

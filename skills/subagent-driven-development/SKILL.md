@@ -76,7 +76,7 @@ digraph process {
     "Wave-eligible tasks in plan?" [shape=diamond];
     "Merge each task branch serially, remove worktree, run full gate" [shape=box];
     "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)" [shape=box];
-    "Use superpowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
+    "Use superpowers-fast:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
     "Read plan, note context and global constraints, create todos" -> "Dispatch implementer subagent (./implementer-prompt.md)";
     "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
@@ -103,7 +103,7 @@ digraph process {
     "Dispatch all re-reviews in one message" -> "Any task VERDICT: needs-fixes?" [label="re-review"];
     "Any task VERDICT: needs-fixes?" -> "Merge each task branch serially, remove worktree, run full gate" [label="no - all approved"];
     "Merge each task branch serially, remove worktree, run full gate" -> "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)";
-    "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)" -> "Use superpowers:finishing-a-development-branch";
+    "Dispatch final code reviewer subagent (../requesting-code-review/code-reviewer.md)" -> "Use superpowers-fast:finishing-a-development-branch";
 }
 ```
 
@@ -130,7 +130,7 @@ Before dispatching, create the worktrees as an explicit step you must
 complete and verify — not a principle to keep in mind:
 
 1. For EACH wave task, create one dedicated worktree branched from the last
-   foundation commit, per superpowers:using-git-worktrees. Give each a distinct
+   foundation commit, per superpowers-fast:using-git-worktrees. Give each a distinct
    name (e.g. `<feature>-task<N>`), one per task.
 2. Confirm you now have N distinct worktree paths for N wave tasks before
    dispatching anything. If two tasks would share a path, STOP and fix it.
@@ -357,7 +357,7 @@ a ledger file, not only in todos.
 
 - [implementer-prompt.md](implementer-prompt.md) - Dispatch implementer subagent
 - [task-reviewer-prompt.md](task-reviewer-prompt.md) - Dispatch task reviewer subagent (spec compliance + code quality)
-- Final whole-branch review: use superpowers:requesting-code-review's [code-reviewer.md](../requesting-code-review/code-reviewer.md)
+- Final whole-branch review: use superpowers-fast:requesting-code-review's [code-reviewer.md](../requesting-code-review/code-reviewer.md)
 
 ## Example Workflow
 
@@ -499,13 +499,13 @@ Done!
 ## Integration
 
 **Required workflow skills:**
-- **superpowers:using-git-worktrees** - Ensures isolated workspace (creates one or verifies existing)
-- **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:requesting-code-review** - Code review template for the final whole-branch review
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+- **superpowers-fast:using-git-worktrees** - Ensures isolated workspace (creates one or verifies existing)
+- **superpowers-fast:writing-plans** - Creates the plan this skill executes
+- **superpowers-fast:requesting-code-review** - Code review template for the final whole-branch review
+- **superpowers-fast:finishing-a-development-branch** - Complete development after all tasks
 
 **Subagents should use:**
-- **superpowers:test-driven-development** - Subagents follow TDD for each task
+- **superpowers-fast:test-driven-development** - Subagents follow TDD for each task
 
 **Alternative workflow:**
-- **superpowers:executing-plans** - Use for parallel session instead of same-session execution
+- **superpowers-fast:executing-plans** - Use for parallel session instead of same-session execution

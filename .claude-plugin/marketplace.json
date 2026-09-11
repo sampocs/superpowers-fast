@@ -1,19 +1,19 @@
 {
   "name": "superpowers-fast",
-  "description": "Marketplace for superpowers-fast, a parallelized fork of the Superpowers core skills library",
+  "description": "Marketplace for superpowers-fast, a tiered fork of the Superpowers skills library",
   "owner": {
     "name": "Sam Pochyly",
     "email": "sam@stridelabs.co"
   },
   "plugins": [
     {
-      "name": "superpowers",
-      "description": "Core skills library (superpowers-fast fork): TDD, debugging, collaboration patterns, with parallelized subagent-driven development",
-      "version": "6.1.1-fast.1",
+      "name": "superpowers-fast",
+      "description": "Tiered skills workflow: sizes each task and scales brainstorming, planning, review, and testing to fit",
+      "version": "1.0.0",
       "source": "./",
       "author": {
-        "name": "Jesse Vincent",
-        "email": "jesse@fsck.com"
+        "name": "Sam Pochyly",
+        "email": "sam@stridelabs.co"
       }
     }
   ]

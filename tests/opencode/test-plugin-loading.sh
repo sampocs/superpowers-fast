@@ -13,7 +13,7 @@ source "$SCRIPT_DIR/setup.sh"
 # Trap to cleanup on exit
 trap cleanup_test_env EXIT
 
-plugin_link="$OPENCODE_CONFIG_DIR/plugins/superpowers.js"
+plugin_link="$OPENCODE_CONFIG_DIR/plugins/superpowers-fast.js"
 
 # Test 1: Verify plugin file exists and is registered
 echo "Test 1: Checking plugin registration..."
@@ -42,12 +42,12 @@ else
     exit 1
 fi
 
-# Test 3: Check using-superpowers skill exists (critical for bootstrap)
-echo "Test 3: Checking using-superpowers skill (required for bootstrap)..."
-if [ -f "$SUPERPOWERS_SKILLS_DIR/using-superpowers/SKILL.md" ]; then
-    echo "  [PASS] using-superpowers skill exists"
+# Test 3: Check using-superpowers-fast skill exists (critical for bootstrap)
+echo "Test 3: Checking using-superpowers-fast skill (required for bootstrap)..."
+if [ -f "$SUPERPOWERS_SKILLS_DIR/using-superpowers-fast/SKILL.md" ]; then
+    echo "  [PASS] using-superpowers-fast skill exists"
 else
-    echo "  [FAIL] using-superpowers skill not found (required for bootstrap)"
+    echo "  [FAIL] using-superpowers-fast skill not found (required for bootstrap)"
     exit 1
 fi
 

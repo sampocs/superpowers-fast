@@ -1,20 +1,13 @@
 {
-  "name": "superpowers",
-  "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
-  "version": "6.1.1-fast.1",
+  "name": "superpowers-fast",
+  "description": "Tiered skills workflow for coding agents: sizes each task (simple / medium / large) and scales brainstorming, planning, review, and testing to fit",
+  "version": "1.0.0",
   "author": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com"
+    "name": "Sam Pochyly",
+    "email": "sam@stridelabs.co"
   },
   "homepage": "https://github.com/sampocs/superpowers-fast",
   "repository": "https://github.com/sampocs/superpowers-fast",
   "license": "MIT",
-  "keywords": [
-    "skills",
-    "tdd",
-    "debugging",
-    "collaboration",
-    "best-practices",
-    "workflows"
-  ]
+  "keywords": ["skills", "workflow", "brainstorming", "debugging", "code-review", "tdd"]
 }

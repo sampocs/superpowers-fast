@@ -1,23 +1,13 @@
 {
-  "name": "superpowers",
-  "version": "6.1.1-fast.1",
-  "description": "Superpowers skills and runtime bootstrap for coding agents",
+  "name": "superpowers-fast",
+  "version": "1.0.0",
+  "description": "Tiered skills workflow and runtime bootstrap for coding agents",
   "type": "module",
-  "main": ".opencode/plugins/superpowers.js",
+  "main": ".opencode/plugins/superpowers-fast.js",
   "keywords": [
-    "pi-package",
     "skills",
-    "tdd",
+    "workflow",
     "debugging",
-    "collaboration",
-    "workflow"
-  ],
-  "pi": {
-    "extensions": [
-      "./.pi/extensions/superpowers.ts"
-    ],
-    "skills": [
-      "./skills"
-    ]
-  }
+    "code-review"
+  ]
 }
