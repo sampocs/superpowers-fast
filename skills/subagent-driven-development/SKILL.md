@@ -386,7 +386,7 @@ Task reviewer: VERDICT: approved
 
 ...
 
-[After all tasks: full suite (merge gate) → final code reviewer → fixers if needed → Finish]
+[After all tasks: full suite (merge gate) → final code reviewer → fixers and scoped re-review if needed → Finish]
 ```
 
 ## Advantages
