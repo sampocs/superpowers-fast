@@ -13,8 +13,6 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Announce at start:** "I'm using the writing-plans skill to create the implementation plan."
 
-**Context:** If working in an isolated worktree, it should have been created via the `superpowers-fast:using-git-worktrees` skill at execution time.
-
 **Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
 - (User preferences for plan location override this default)
 
@@ -35,8 +33,8 @@ This structure informs the task decomposition. Each task should produce self-con
 
 ## Task Right-Sizing
 
-A task is the smallest unit that carries its own test cycle and is worth a
-fresh reviewer's gate. When drawing task boundaries: fold setup,
+A task is the smallest unit that carries its own test cycle. When drawing
+task boundaries: fold setup,
 configuration, scaffolding, and documentation steps into the task whose
 deliverable needs them; split only where a reviewer could meaningfully
 reject one task while approving its neighbor. Each task ends with an
@@ -75,7 +73,7 @@ Structure every multi-task plan for wave execution:
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers-fast:subagent-driven-development (recommended) or superpowers-fast:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers-fast:subagent-driven-development to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** [One sentence describing what this builds]
 
@@ -110,6 +108,8 @@ include this section.]
   block is how they learn the names and types neighboring tasks use.]
 - Depends on: [foundation Tasks this needs; omit for foundation tasks.
   Parallel-safe tasks MUST list only foundation tasks, never each other.]
+- Review: [yes | no — yes for state machines, money, auth, migrations,
+  concurrency; when in doubt, yes. Tagged tasks get a per-task review.]
 
 - [ ] **Step 1: Write the failing test**
 
@@ -170,24 +170,10 @@ After writing the complete plan, look at the spec with fresh eyes and check the 
 
 **3. Type consistency:** Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called `clearLayers()` in Task 3 but `clearFullLayers()` in Task 7 is a bug.
 
+**4. Review tags:** Every task has `Review: yes|no`; risky tasks (state machines, money, auth, migrations, concurrency) are `yes`.
+
 If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.
 
 ## Execution Handoff
 
-After saving the plan, offer execution choice:
-
-**"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Two execution options:**
-
-**1. Subagent-Driven (recommended)** - I dispatch a fresh subagent per task, review between tasks, fast iteration
-
-**2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
-
-**Which approach?"**
-
-**If Subagent-Driven chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers-fast:subagent-driven-development
-- Fresh subagent per task + two-stage review
-
-**If Inline Execution chosen:**
-- **REQUIRED SUB-SKILL:** Use superpowers-fast:executing-plans
-- Batch execution with checkpoints for review
+After saving the plan, say "Plan saved to `docs/superpowers/plans/<filename>.md`. Starting subagent-driven development." and invoke **superpowers-fast:subagent-driven-development**. No execution-choice prompt.

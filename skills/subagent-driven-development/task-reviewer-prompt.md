@@ -174,20 +174,33 @@ Subagent (general-purpose):
 
         VERDICT: needs-fixes
 
-    If needs-fixes, follow the verdict line with a fix brief the controller will
-    dispatch VERBATIM as the fix subagent's prompt. You are authoring the fix
-    dispatch — the controller only adds the worktree path and report path. Include,
-    in this order:
+    Use needs-fixes whenever there is any finding to fix, Minor included.
+    Follow the verdict line with up to two fix briefs the controller dispatches
+    VERBATIM — the standard-tier brief (Critical/Important) first, then the
+    cheap-tier brief (Minor). Omit a brief with no findings. The controller
+    only adds the worktree path and report path.
 
-        ## Fix brief (ready to dispatch)
-        You are fixing review findings for Task N (<component>) of <project>.
+        ## Fix brief (standard tier)
+        You are fixing Critical/Important review findings for Task N (<component>) of <project>.
         Findings (fix ALL):
         1. (<severity>) <file>:<line> — <what is wrong, what correct looks like>
         ...
         Covering tests: run <exact command(s) for the tests covering these changes>
         and confirm they pass. Do not run unrelated suites.
+        Right-first-time: update comments/docstrings you invalidate; tests must
+        fail if the behavior breaks; cover every branch you touch; reuse existing
+        constants and helpers.
         Append your fix report (what changed, commands run, output) to:
         <report file path>
+        Return only: STATUS, commit hash, one-line test summary.
+
+        ## Fix brief (cheap tier)
+        You are fixing Minor review findings for Task N (<component>) of <project>.
+        Findings (fix ALL):
+        1. <file>:<line> — <what to change>
+        ...
+        Covering tests: run <exact command(s)> and confirm they pass.
+        Append your fix report to: <report file path>
         Return only: STATUS, commit hash, one-line test summary.
 
     A fix brief that says "see my findings above" is a defect — the fix subagent
@@ -216,6 +229,6 @@ Subagent (general-purpose):
 fix brief attached when the verdict is needs-fixes.
 
 A fix dispatch can address spec gaps and quality findings together;
-re-review after fixes covers both verdicts. The verdict line is what the
+a scoped re-review of fixes that touched logic covers both verdicts. The verdict line is what the
 controller routes on — during a review wave it dispatches fix subagents
 for every task whose verdict came back needs-fixes, in one message.

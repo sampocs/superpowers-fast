@@ -52,8 +52,8 @@ Subagent (general-purpose):
     **While you work:** If you encounter something unexpected or unclear, **ask questions**.
     It's always OK to pause and clarify. Don't guess or make assumptions.
 
-    While iterating, run the focused test for what you're changing; run the
-    full suite once before committing, not after every edit.
+    Run only the tests covering what you change — never the full suite; the
+    controller runs it once after merging.
 
     ## Code Organization
 
@@ -109,6 +109,13 @@ Subagent (general-purpose):
     - Did I follow TDD if required?
     - Are tests comprehensive?
     - Is the test output pristine (no stray warnings or noise)?
+
+    **Right-first-time checklist:**
+    1. Changed behavior → update the comments and docstrings that describe it.
+    2. Each test must fail if the behavior breaks: assert effects, not calls,
+       substrings, or tautologies; test negative cases with non-default values.
+    3. Cover every branch, call site, and state transition you touched.
+    4. Reuse existing constants and helpers; don't redeclare them.
 
     If you find issues during self-review, fix them now before reporting.
 
