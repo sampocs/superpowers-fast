@@ -22,7 +22,7 @@ Per `../using-superpowers-fast/references/build-loop.md`, on the feature branch.
 Record the SHA from `git rev-parse HEAD` as BASE, then dispatch one implementer per chunk with [implementer-prompt.md](implementer-prompt.md):
 
 - **One chunk:** one implementer on the feature branch.
-- **Two or three chunks:** one worktree per chunk (Worktrees in build-loop.md). Dispatch every chunk whose `Depends on:` is satisfied in one message. When a chunk merges (step 4), dispatch the chunks waiting on it, branched from the updated feature branch.
+- **Two or three chunks:** one worktree per chunk (Worktrees in build-loop.md — without worktrees, run them one at a time on the branch). Dispatch every chunk whose `Depends on:` is satisfied in one message. When a chunk merges (step 4), dispatch the chunks waiting on it, branched from the updated feature branch.
 
 Model: standard tier by default; most capable for chunks needing design judgment or broad codebase understanding. Always set it explicitly.
 

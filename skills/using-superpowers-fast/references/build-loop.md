@@ -57,4 +57,4 @@ No merge / PR / keep / discard prompt.
 
 ## Worktrees
 
-Use the repo's or user's worktree tool when one is configured (e.g. `git gtr new <branch> --yes`); otherwise `git worktree add`. One worktree per parallel implementer — two agents in one tree race on the git index, even with disjoint files. Create them in one batch and confirm N paths for N implementers before dispatching.
+Use the repo's or user's worktree tool when one is configured (e.g. `git gtr new <branch> --yes`); otherwise `git worktree add`. When the harness already owns the workspace it put you in, or worktrees aren't available there, don't create any — run parallel work one chunk at a time on the branch instead. One worktree per parallel implementer — two agents in one tree race on the git index, even with disjoint files. Create them in one batch and confirm N paths for N implementers before dispatching.
