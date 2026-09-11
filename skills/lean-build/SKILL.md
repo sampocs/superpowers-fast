@@ -19,7 +19,7 @@ Per `../using-superpowers-fast/references/build-loop.md`, on the feature branch.
 
 ## 3. Implement
 
-Record `BASE=$(git rev-parse HEAD)`, then dispatch one implementer per chunk with [implementer-prompt.md](implementer-prompt.md):
+Record the SHA from `git rev-parse HEAD` as BASE, then dispatch one implementer per chunk with [implementer-prompt.md](implementer-prompt.md):
 
 - **One chunk:** one implementer on the feature branch.
 - **Two or three chunks:** one worktree per chunk (Worktrees in build-loop.md). Dispatch every chunk whose `Depends on:` is satisfied in one message. When a chunk merges (step 4), dispatch the chunks waiting on it, branched from the updated feature branch.
@@ -41,9 +41,9 @@ As each chunk reports DONE, merge its branch into the feature branch — one at 
 
 Run the build loop from the full suite on, Medium column:
 
-- **Final review:** `../subagent-driven-development/scripts/review-package $BASE HEAD`, then dispatch [code-reviewer.md](../requesting-code-review/code-reviewer.md) on the most capable tier with the spec path and the printed package path.
+- **Final review:** `../subagent-driven-development/scripts/review-package <BASE> HEAD`, then dispatch [code-reviewer.md](../requesting-code-review/code-reviewer.md) on the most capable tier with the spec path and the printed package path.
 - **Fixers:** the reviewer's standard-tier fix brief verbatim to one standard-tier fixer, then its cheap-tier brief to one cheap-tier fixer. Add the branch path to each.
-- **Scoped re-review:** `review-package` over the fix commits only, same template.
+- **Scoped re-review:** `review-package <pre-fix SHA> HEAD`, same template, with `[PLAN_OR_REQUIREMENTS]` = the findings list.
 
 ## 6. Finish
 

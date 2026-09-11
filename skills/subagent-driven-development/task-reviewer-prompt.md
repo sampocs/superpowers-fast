@@ -185,6 +185,7 @@ Subagent (general-purpose):
         Findings (fix ALL):
         1. (<severity>) <file>:<line> — <what is wrong, what correct looks like>
         ...
+        Each bug fix gets a regression test that fails before the fix.
         Covering tests: run <exact command(s) for the tests covering these changes>
         and confirm they pass. Do not run unrelated suites.
         Right-first-time: update comments/docstrings you invalidate; tests must

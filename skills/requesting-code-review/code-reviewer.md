@@ -80,6 +80,7 @@ Subagent (general-purpose):
         You are fixing Critical/Important review findings in <project>.
         Findings (fix ALL):
         1. (<severity>) <file>:<line> — <what is wrong, what correct looks like>
+        Each bug fix gets a regression test that fails before the fix.
         Covering tests: run <exact commands> and confirm they pass.
         Right-first-time: update comments/docstrings you invalidate; tests must
         fail if the behavior breaks; cover every branch you touch; reuse

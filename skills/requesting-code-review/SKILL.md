@@ -25,6 +25,8 @@ Dispatch a reviewer subagent with precisely crafted context — never your sessi
 
 ## Act on the findings
 
+Simple fixes inline. Medium and Large:
+
 - **Critical/Important** → one standard-tier fixer with the reviewer's standard-tier fix brief.
 - **Minor** → then one cheap-tier fixer with the cheap-tier fix brief.
 - **Re-review** only the fix diffs, only when a fix touched logic. At most two rounds, then tell the user what's left.

@@ -53,7 +53,7 @@ Before attempting ANY fix:
 
 ## Phase 4: Fix
 
-**Size the fix** per `using-superpowers-fast` and announce it. Simple → fix within `quick-change`. Medium or Large → `brainstorming`, with the root cause as context. In every tier:
+**Already inside a tier flow** (a build loop's full-suite step, a fixer, an implementer)? Don't re-size — fix within that flow and return to it. Otherwise, **size the fix** per `using-superpowers-fast` and announce it. Simple → fix within `quick-change`. Medium or Large → `brainstorming`, with the root cause as context. In every tier:
 
 1. **Failing test first** — the simplest reproduction, automated if possible, a one-off script if there's no framework. It must fail before the fix.
 2. **One fix** for the root cause. No "while I'm here" changes, no bundled refactoring.

@@ -8,7 +8,7 @@ About a minute, before writing code:
 
 1. `git fetch`.
 2. Look for overlap: `git log --oneline -10 origin/main -- <paths you'll touch>` and, if `gh` is available, `gh pr list --search "<path or keyword>"`. Recent overlap → rebase first. An open PR already doing the work → tell the user before building.
-3. Baseline: `gh run list --branch main --limit 3` (or the repo's CI). If `main` is red, note the failing checks in `.superpowers/baseline.md`. Check a later failure against the baseline — and, if unclear, re-run it alone on `origin/main` — before debugging it as yours.
+3. Baseline: `gh run list --branch main --limit 3` (or the repo's CI). If `main` is red, note the failing checks in `.superpowers/baseline.md` (create `.superpowers/.gitignore` containing `*` if it's missing, so the baseline never lands in a PR). Check a later failure against the baseline — and, if unclear, re-run it alone on `origin/main` — before debugging it as yours.
 4. Follow the repo's or user's branching policy; never build on `main` directly.
 
 ## The loop
@@ -32,7 +32,7 @@ build — targeted tests as you go
 - **Targeted tests** = the tests covering the code you changed. Never the full suite while iterating.
 - **Full-suite failures:** check the baseline first. Pre-existing failures are reported, not fixed.
 - **Fixers** get their band's complete findings list — never one fixer per finding — plus the covering test commands. Each reports the command it ran and the output.
-- **Scoped re-review:** only the fix diffs, only when a fix touched logic, whatever the severity. Fixes that change only comments, tests, or constants skip it.
+- **Scoped re-review:** only the fix diffs, only when a fix touched logic, whatever the severity. Fixes that change only comments, tests, or constants skip it. Record the SHA before dispatching fixers and package `<pre-fix SHA>..HEAD`. The re-reviewer's requirements are the findings being fixed: it checks each is resolved and nothing regressed — not the whole spec.
 - **Cap:** at most two fix → re-review rounds. Then stop and tell the user what's left.
 - **Bug fixes:** a regression test that fails before the fix.
 - A clean review means one full-suite run; a review with fixes means two.
