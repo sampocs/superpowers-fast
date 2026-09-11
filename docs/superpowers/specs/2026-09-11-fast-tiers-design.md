@@ -39,20 +39,45 @@ From 33 PR-producing sessions (tenor-studio, diffalo) plus the review and fix tr
   - bug → `systematic-debugging` → root cause → size the fix → that tier.
 - **Codex safety net:** Codex has no session-start hook (native skill discovery). `brainstorming` and `quick-change` open with "If no tier was announced, size first."
 
+## Build, test, and review loop
+
+Every tier runs the same loop:
+
+```
+build — targeted tests as you go
+  → full suite; fix until green
+  → review
+  → fixes; each fixer re-runs the tests covering its change
+  → scoped re-review of any fix that touched logic
+  → full suite again, only if fixes changed code
+  → PR
+```
+
+| | Simple | Medium | Large |
+|---|---|---|---|
+| **Builds** | main agent | 1–3 lean implementers | SDD tasks, with TDD |
+| **Review** | one fresh-eyes reviewer: standard tier, most capable if the diff touches money, auth, or state machines | one final whole-branch review, most capable tier | per-task review on risky tasks, plus a final whole-branch review, most capable tier |
+| **Fixes** | main agent, inline | Critical/Important → one standard-tier fixer, then Minor → one cheap-tier fixer | same as Medium |
+
+- **Scoped re-review:** covers only the fix diffs, and runs only when a fix touched logic, whatever the finding's severity. Fixes that change only comments, tests, or constants skip it.
+- **Cap:** at most two fix → re-review rounds; then surface what's left to the user.
+- **Regression tests:** every bug fix, any tier, gets a regression test that fails before the fix.
+- **Large's inner loop:** each task builds with targeted tests; tasks tagged `Review: yes` get a per-task review → fixes → scoped re-review before merging. The outer loop runs once after all tasks merge; its first full suite is the merge gate.
+- A clean review means one full-suite run; a review with fixes means two.
+
 ## Tier flows
 
 ### Simple — `quick-change` (replaces sp-lite)
 
 1. **Align:** one line: what, which files, the riskiest assumption. Ask only if a wrong guess means redoing the work.
 2. **Pre-flight.**
-3. **Do:** follow existing patterns; apply the right-first-time checklist.
-4. **Prove:** targeted test or run. Bug fix → failing regression test first.
-5. **Review:** one fresh-eyes reviewer subagent, standard tier (most capable if the diff touches money, auth, or state machines). The main agent fixes findings inline.
-6. **Finish.**
+3. **Do:** follow existing patterns; apply the right-first-time checklist. Prove with a targeted test or run.
+4. **The loop** (from the full suite on).
+5. **Finish.**
 
 - **Tripwires → Medium:** more than ~150 lines of logic; a design choice with more than one reasonable answer; an ambiguity one question can't settle; the work stops feeling small.
 - Keeps sp-lite's branching rule (follow the repo's or user's worktree policy) and its production-grade comment rule.
-- Drops sp-lite's red-flags row that calls a review subagent "over-processing"; it contradicts the Review step.
+- Drops sp-lite's red-flags row that calls a review subagent "over-processing"; it contradicts the review step.
 
 ### Medium — `brainstorming` → `lean-build` (new)
 
@@ -63,23 +88,18 @@ From 33 PR-producing sessions (tenor-studio, diffalo) plus the review and fix tr
    - Single chunk → one implementer on the feature branch.
    - Independent chunks → parallel, each in its own worktree (created in one batch).
    - Dependent chunks → in order.
-5. **Lean implementer contract:** targeted tests only; tests written alongside the code (no per-step red-green); right-first-time checklist; one commit; report of ≤10 lines. Standard tier by default, most capable for tricky chunks.
-6. **Merge** chunk branches one at a time; remove worktrees in the background.
-7. **Final review:** one whole-branch review, most capable tier.
-8. **Fix, in order:**
-   1. One fixer (standard tier) for all Critical/Important findings.
-   2. Scoped re-review (fix diff only) if those fixes touched logic.
-   3. One cheap-tier fixer patches all Minor findings; no re-review.
-9. **Finish.**
+5. **Merge** chunk branches one at a time; remove worktrees in the background.
+6. **The loop** (from the full suite on).
+7. **Finish.**
+
+**Lean implementer contract:** targeted tests only; tests written alongside the code (no per-step red-green); right-first-time checklist; one commit; a report of ≤10 lines. Standard tier by default, most capable for tricky chunks.
 
 ### Large — `brainstorming` → `writing-plans` → `subagent-driven-development`
 
 Unchanged except:
 
-- **Per-task review only on risky tasks.** The plan tags each task `Review: yes|no`; `yes` for state machines, money, auth, migrations, concurrency. The final whole-branch review always runs.
-- **Minor findings** → cheap-tier fixer, no re-review.
-- **Re-review** only after Critical/Important fixes that touched logic, scoped to the fix diff.
-- **Tests:** implementers run targeted tests only; the full suite runs at the merge gate and at Finish.
+- **Plans tag each task `Review: yes|no`:** `yes` for state machines, money, auth, migrations, concurrency; when in doubt, `yes`.
+- **Reviews, fixes, and tests follow the loop** (inner per task, outer after the merge).
 - **Implementer prompt** carries the right-first-time checklist.
 - **No execution-choice prompt:** `writing-plans` hands straight to SDD.
 - **Kept:** detailed plans with code, TDD, foundation → parallel waves with `Depends on:`, one worktree per wave task.
@@ -87,15 +107,13 @@ Unchanged except:
 ## Shared rules
 
 - **Pre-flight (~1 min):** `git fetch`; flag recent `main` commits or open PRs touching the target files; record `main`'s failing tests and CI status as the baseline, so later failures are compared, not re-triaged.
-- **Tests:** targeted while iterating; the full suite once at Finish, after the last change, run by the main agent (Large also runs it at the merge gate). Every bug fix, any tier: a regression test that fails before the fix.
-- **Fix loops:** at most two fix → re-review rounds per review; then surface what's left to the user.
 - **Models:** plugin text names tiers only (cheap / standard / most capable), never vendor models. The mapping comes from the user's instructions; with none, use the session model.
 - **Right-first-time checklist** (implementer prompts and `quick-change`):
   1. Changed behavior → update the comments and docstrings that describe it.
   2. Each test must fail if the behavior breaks: assert effects, not calls, substrings, or tautologies; test negative cases with non-default values.
   3. Cover every branch, call site, and state transition you touched.
   4. Reuse existing constants and helpers; don't redeclare them.
-- **Finish:** full suite, push, open the PR per repo policy, remove worktrees in the background. No merge / PR / keep / discard prompt.
+- **Finish:** push, open the PR per repo policy, remove worktrees in the background. No merge / PR / keep / discard prompt.
 - **Worktrees:** use the repo's or user's tool (e.g. `git gtr`), else `git worktree`.
 
 ## Skill map
@@ -107,7 +125,7 @@ Unchanged except:
 | `brainstorming` | Tier check, skip one-answer questions, Build plan, tier-aware handoff; trimmed |
 | `lean-build` | New |
 | `writing-plans` | `Review: yes|no` per task; no execution-choice prompt |
-| `subagent-driven-development` | Large changes above; drops references to cut skills |
+| `subagent-driven-development` | Follows the loop; drops references to cut skills |
 | `requesting-code-review` | Shared final-review prompt; tier-based model wording |
 | `systematic-debugging` | Hands the fix to a tier; trimmed |
 | `verification-before-completion` | Trimmed; "execute the FULL command" → "execute it fresh" |
@@ -148,7 +166,11 @@ Steps 1–3 and 5 are plan tasks. Step 4 runs afterwards as its own Medium task 
 
 - **Plugin tests:** session-start hook test and shell lint pass after the rename; tests for cut harnesses and skills are removed.
 - **Sizing smoke test:** six headless prompts (two per tier, from the rubric examples) through `tests/explicit-skill-requests`; each must announce the expected tier.
-- **Measurement:** commit the transcript-analysis scripts to `scripts/session-analysis/`. Record agent-minutes per phase for the dogfood run, then re-run the per-tier numbers after a few weeks. Target for a Medium code feature: 50–65 agent-min (baseline 100–130).
+- **Measurement:** commit the transcript-analysis scripts to `scripts/session-analysis/`, extended to report per tier:
+  - **Speed:** agent-minutes per phase. Target for a Medium code feature: 50–65 agent-min (baseline 100–130).
+  - **Bugs that got through:** CI failures after the PR opens, real bugs in the first external review pass (e.g. Codex pass 1), and follow-up fix PRs. If these rise after rollout, the loop needs another layer.
+
+  Record the dogfood run, then re-run both after a few weeks.
 
 ## Out of scope
 
